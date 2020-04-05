@@ -1,21 +1,27 @@
 public class Human {
     private int age;
-    private String name;
+    private String firstName;
+    private String lastName;
 
     public Human(){
 
     }
 
-    public Human(int age, String name){
+    public Human(int age, String firstName, String lastName){
         this.age = age;
-        this.name = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public int getAge(){
         return age;
     }
 
-    public String getName(){
-        return name;
+    public String getFirstName(){
+        return firstName;
+    }
+
+    public String getLastName(){
+        return lastName;
     }
 }
