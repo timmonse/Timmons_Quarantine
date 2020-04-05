@@ -17,41 +17,49 @@ public class LifeGameEvan {
 
         getNames();
 
-        //Scanner for user input
-        Scanner scan = new Scanner(System.in);
 
-        //Get first and last name for user
-        System.out.println("Please enter your first name: ");
-        playerFirstName = scan.nextLine();
-        while(!playerFirstName.matches("[A-Za-z0-9]+")){
-            System.out.println("Please only enter alphanumeric characters: ");
-            playerFirstName = scan.nextLine();
-        }
-
-        System.out.println("Please enter your last name: ");
-        playerLastName = scan.nextLine();
-        while(!playerLastName.matches("[A-Za-z0-9]+")){
-            System.out.println("Please only enter alphanumeric characters: ");
-            playerLastName = scan.nextLine();
-        }
-
-        //Create new human with the given parameters
-        Human mainCharacter = new Human(playerAge, playerFirstName, playerLastName);
-
-        //Ask user to confirm their name or restart
-        System.out.println("Your name is: " + playerFirstName +  " " + playerLastName + ". Really?.....");
-
-        //If user does not say yes, have the name process repeat
-        if(!askYes()){
-            startGame();
-        }
 
     }
 
-    private static String[] getNames(boolean isRandom){
+    private static void getNames(){
         System.out.println("Do you want a random name?");
         if(askYes()){
-            
+            //Create human with random first and last name
+            Human mainCharacter = new Human();
+            playerFirstName = mainCharacter.getFirstName();
+            playerLastName = mainCharacter.getLastName();
+            System.out.println("Your first name is: " + playerFirstName);
+            System.out.println("Your last name is: " + playerLastName);
+        }
+        else{
+            //Scanner for user input
+            Scanner scan = new Scanner(System.in);
+
+            //Get first and last name for user
+            System.out.println("Please enter your first name: ");
+            playerFirstName = scan.nextLine();
+            while(!playerFirstName.matches("[A-Za-z0-9]+")){
+                System.out.println("Please only enter alphanumeric characters: ");
+                playerFirstName = scan.nextLine();
+            }
+
+            System.out.println("Please enter your last name: ");
+            playerLastName = scan.nextLine();
+            while(!playerLastName.matches("[A-Za-z0-9]+")){
+                System.out.println("Please only enter alphanumeric characters: ");
+                playerLastName = scan.nextLine();
+            }
+
+            //Create new human with the given parameters
+            Human mainCharacter = new Human(playerAge, playerFirstName, playerLastName);
+
+            //Ask user to confirm their name or restart
+            System.out.println("Your name is: " + playerFirstName +  " " + playerLastName + ". Really?.....");
+
+            //If user does not say yes, have the name process repeat
+            if(!askYes()){
+                startGame();
+            }
         }
     }
 
