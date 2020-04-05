@@ -4,7 +4,8 @@ public class Text2Life_Main {
 
         startGame();
         int age = 0;
-        System.out.println(age);
+        //System.out.println(age);
+
 
     }
 
