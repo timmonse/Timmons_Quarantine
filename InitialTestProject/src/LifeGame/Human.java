@@ -1,3 +1,5 @@
+package LifeGame;
+
 import java.util.Random;
 
 public class Human {
@@ -8,16 +10,19 @@ public class Human {
     }
 
     private int age;
-    private float accountValue;
     private String firstName;
     private String lastName;
+
+    public SavingsAccount savingsAccount;
+    public InvestmentAccount investmentAccount;
 
     public Human(){
         firstName = getRandomFirstName();
         lastName = getRandomLastName();
 
         age = 0;
-        accountValue = 0;
+        savingsAccount = new SavingsAccount(0);
+        investmentAccount = new InvestmentAccount(0);
     }
 
     public Human(String firstName, String lastName){
@@ -25,15 +30,25 @@ public class Human {
         this.lastName = lastName;
 
         age = 0;
-        accountValue = 0;
+        savingsAccount = new SavingsAccount(0);
+        investmentAccount = new InvestmentAccount(0);
+    }
+
+    public Human(String firstName, String lastName, int initialAccountBalance){
+        this.firstName = firstName;
+        this.lastName = lastName;
+
+        age = 0;
+        savingsAccount = new SavingsAccount(initialAccountBalance);
+        investmentAccount = new InvestmentAccount(0);
     }
 
     /**
      *
      * @return Value of humans account
      */
-    public float getAccountValue(){
-        return accountValue;
+    public float getSavingsAccountValue(){
+        return this.savingsAccount.getValue();
     }
 
     /**
@@ -102,7 +117,7 @@ public class Human {
     }
 
     /**
-     * @return Randomly selected first name from data.java
+     * @return Randomly selected first name from LifeGame.data.java
      */
     private String getRandomFirstName(){
         String[] firstNameArray = data.getFirstNames();
@@ -116,7 +131,7 @@ public class Human {
     }
 
     /**
-     * @return Randomly selected last name from data.java
+     * @return Randomly selected last name from LifeGame.data.java
      */
     private String getRandomLastName(){
         String[] lastNameArray = data.getLastNames();

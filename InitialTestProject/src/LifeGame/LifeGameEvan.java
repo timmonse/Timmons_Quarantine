@@ -1,22 +1,31 @@
+package LifeGame;
+
 import java.util.Scanner;
 
 public class LifeGameEvan {
     private enum Command {
-        empty, exit, getInfo, advanceYear, showCommands
+        empty, exit, getInfo, advanceYear, changeSavingsValue,
+        getSavingsValue, changeInvestmentValue, getInvestmentValue,
+        showCommands, setGrowthRate
     }
 
     private static Human mainCharacter;
 
     public static void main(String args[]) {
         startGame();
+        runGame();
     }
 
     private static void startGame() {
-        boolean exit = false;
-
         displayStartArt();
         displayLine();
         getNames();
+        initialAccountValue();
+    }
+
+    private static void runGame(){
+        boolean exit = false;
+
         //Loop through user input until the user exits
         while(!exit){
             exit = getUserInput();
@@ -25,6 +34,7 @@ public class LifeGameEvan {
 
     private static void advanceYear() {
         mainCharacter.advanceAge();
+        mainCharacter.investmentAccount.advanceYear();
         displayLine();
         if(mainCharacter.getAge() != 1){
             System.out.println("You are now: " + mainCharacter.getAge() + " years old.");
@@ -35,6 +45,21 @@ public class LifeGameEvan {
         }
         displayLine();
 
+    }
+
+    //TODO
+    private static void displayAccountValue(){
+        displayLine();
+        System.out.println("The value of your savings is: " + mainCharacter.savingsAccount.getValue());
+        displayLine();
+    }
+
+    //TODO
+    private static void initialAccountValue(){
+        System.out.println("Please enter an initial account value: ");
+        Scanner scan = new Scanner(System.in);
+        int value = Integer.parseInt(scan.nextLine());
+        mainCharacter.investmentAccount.changeValue(value);
     }
 
     /**
@@ -55,6 +80,10 @@ public class LifeGameEvan {
         boolean exit = false;
         Command command = Command.empty;
         String input;
+
+        String valueString;
+        int value;
+        float floatValue;
 
         Scanner scan = new Scanner(System.in);
         System.out.print(">>");
@@ -85,6 +114,36 @@ public class LifeGameEvan {
                     command = Command.showCommands;
                     displayCommands();
                     break;
+                case("changeSavingsValue"):
+                    command = Command.changeSavingsValue;
+                    System.out.println("Please enter a value: ");
+                    valueString = scan.nextLine();
+                    value = Integer.parseInt(valueString);
+                    mainCharacter.savingsAccount.changeValue(value);
+                    break;
+                case("getSavingsValue"):
+                    command = Command.getSavingsValue;
+                    displayAccountValue();
+                    break;
+                case("changeInvestmentValue"):
+                    command = Command.changeInvestmentValue;
+                    System.out.println("Please enter a value: ");
+                    valueString = scan.nextLine();
+                    value = Integer.parseInt(valueString);
+                    mainCharacter.investmentAccount.changeValue(value);
+                    mainCharacter.savingsAccount.changeValue(value * -1);
+                    break;
+                case("getInvestmentValue"):
+                    command = Command.getInvestmentValue;
+                    displayAccountValue();
+                    break;
+                case("setGrowthRate"):
+                    command = Command.setGrowthRate;
+                    System.out.println("Please enter a value: ");
+                    valueString = scan.nextLine();
+                    floatValue = Float.parseFloat(valueString);
+                    mainCharacter.investmentAccount.setGrowthRate(floatValue);
+                    break;
                 case("exit"):
                     command = command.exit;
                     break;
@@ -109,6 +168,8 @@ public class LifeGameEvan {
         System.out.println("Name: " + mainCharacter.getFirstName() + " " + mainCharacter.getLastName());
         System.out.println("Age: " + mainCharacter.getAge());
         System.out.println("Life Stage: " + mainCharacter.getLifeStage());
+        System.out.println("Savings Value: " + mainCharacter.savingsAccount.getValue());
+        System.out.println("Investment Value: " + mainCharacter.investmentAccount.getValue());
         displayLine();
     }
 
@@ -120,7 +181,7 @@ public class LifeGameEvan {
         System.out.println("Do you want a random name?");
         if (askYes()) {
             //Create human with random first and last name
-            //This happens automatically when no inputs are passed into Human class
+            //This happens automatically when no inputs are passed into LifeGame.Human class
             mainCharacter = new Human();
         } else {
             //Scanner for user input
