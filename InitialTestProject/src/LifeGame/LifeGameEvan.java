@@ -4,9 +4,9 @@ import java.util.Scanner;
 
 public class LifeGameEvan {
     private enum Command {
-        empty, exit, getInfo, advanceYear, changeSavingsValue,
-        getSavingsValue, changeInvestmentValue, getInvestmentValue,
-        showCommands, setGrowthRate
+        empty, help, exit, getInfo, next, setSavings,
+        getSavings, setInvestment, getInvestment,
+         setRate, transferStoI, transferItoS
     }
 
     private static Human mainCharacter;
@@ -43,8 +43,37 @@ public class LifeGameEvan {
             //Change to "1 year old" vs "1 years old"
             System.out.println("You are now: " + mainCharacter.getAge() + " year old.");
         }
+        System.out.printf("Investment Account: $%.2f\n", mainCharacter.investmentAccount.getValue());
+        System.out.printf("Savings Account: $%.2f\n", mainCharacter.savingsAccount.getValue());
         displayLine();
 
+    }
+
+    //TODO Debugging tool
+    private static void setSavings(){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter a value: ");
+        String valueString = scan.nextLine();
+        float value = Integer.parseInt(valueString);
+        mainCharacter.savingsAccount.setValue(value);
+    }
+
+    //TODO Debugging tool
+    private static void setInvestment(){
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please enter a value: ");
+        String valueString = scan.nextLine();
+        float value = Integer.parseInt(valueString);
+        mainCharacter.investmentAccount.setValue(value);
+    }
+
+    //TODO Debugging tool
+    private static void setRate(){
+        System.out.println("Please enter a value: ");
+        Scanner scan = new Scanner(System.in);
+        String valueString = scan.nextLine();
+        float floatValue = Float.parseFloat(valueString);
+        mainCharacter.investmentAccount.setRate(floatValue);
     }
 
     //TODO
@@ -73,6 +102,41 @@ public class LifeGameEvan {
         }
     }
 
+    private static void transferStoI(){
+        System.out.println("Please enter a value to transfer from savings to investment: ");
+        Scanner scan = new Scanner(System.in);
+        String amountString = scan.nextLine();
+        float amount = Integer.parseInt(amountString);
+        //Cant transfer negative amounts
+        if(amount < 0){
+            System.out.println("Transfer Failed: You can not transfer negative amounts (try transferItoS)");
+            return;
+        }
+        else if(amount > mainCharacter.savingsAccount.getValue()){
+            System.out.println("Transfer Failed: You can not transfer more than the value of your savings account.");
+            return;
+        }
+        mainCharacter.investmentAccount.changeValue(amount);
+        mainCharacter.savingsAccount.changeValue(amount * -1);
+    }
+
+    private static void transferItoS(){
+        System.out.println("Please enter a value to transfer from investment to savings: ");
+        Scanner scan = new Scanner(System.in);
+        String amountString = scan.nextLine();
+        float amount = Integer.parseInt(amountString);
+        if(amount < 0){
+            System.out.println("Transfer Failed: You can not transfer negative amounts (try transferStoI)");
+            return;
+        }
+        else if(amount > mainCharacter.investmentAccount.getValue()){
+            System.out.println("Transfer Failed: You can not transfer more than the value of your investment account.");
+            return;
+        }
+        mainCharacter.savingsAccount.changeValue(amount);
+        mainCharacter.investmentAccount.changeValue(amount * -1);
+    }
+
     /**
      * Prompts user and executes actions based on given commands
      */
@@ -96,53 +160,42 @@ public class LifeGameEvan {
                     command = Command.getInfo;
                     displayInfo();
                     break;
-                case("advanceYear"):
-                    command = Command.advanceYear;
-                    advanceYear();
-                    break;
                 case("next"):
-                    //Same as advanceYear for now
-                    command = Command.advanceYear;
+                    command = Command.next;
                     advanceYear();
-                    break;
-                case("showCommands"):
-                    command = Command.showCommands;
-                    displayCommands();
                     break;
                 case("help"):
                     //Same as showCommands for now
-                    command = Command.showCommands;
+                    command = Command.help;
                     displayCommands();
                     break;
-                case("changeSavingsValue"):
-                    command = Command.changeSavingsValue;
-                    System.out.println("Please enter a value: ");
-                    valueString = scan.nextLine();
-                    value = Integer.parseInt(valueString);
-                    mainCharacter.savingsAccount.changeValue(value);
+                case("setSavings"):
+                    command = Command.setSavings;
+                    setSavings();
                     break;
-                case("getSavingsValue"):
-                    command = Command.getSavingsValue;
+                case("setInvestment"):
+                    command = Command.setInvestment;
+                    setInvestment();
+                    break;
+                case("getSavings"):
+                    command = Command.getSavings;
                     displayAccountValue();
                     break;
-                case("changeInvestmentValue"):
-                    command = Command.changeInvestmentValue;
-                    System.out.println("Please enter a value: ");
-                    valueString = scan.nextLine();
-                    value = Integer.parseInt(valueString);
-                    mainCharacter.investmentAccount.changeValue(value);
-                    mainCharacter.savingsAccount.changeValue(value * -1);
-                    break;
-                case("getInvestmentValue"):
-                    command = Command.getInvestmentValue;
+                case("getInvestment"):
+                    command = Command.getInvestment;
                     displayAccountValue();
                     break;
-                case("setGrowthRate"):
-                    command = Command.setGrowthRate;
-                    System.out.println("Please enter a value: ");
-                    valueString = scan.nextLine();
-                    floatValue = Float.parseFloat(valueString);
-                    mainCharacter.investmentAccount.setGrowthRate(floatValue);
+                case("transferStoI"):
+                    command = Command.transferStoI;
+                    transferStoI();
+                    break;
+                case("transferItoS"):
+                    command = Command.transferItoS;
+                    transferItoS();
+                    break;
+                case("setRate"):
+                    command = Command.setRate;
+                    setRate();
                     break;
                 case("exit"):
                     command = command.exit;

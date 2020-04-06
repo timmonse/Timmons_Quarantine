@@ -1,3 +1,5 @@
+package LifeGame;
+
 public class data {
 
     public static String[] getLastNames(){

@@ -6,11 +6,10 @@ public abstract class BankAccount {
     public BankAccount(){
     }
 
-    public float getValue(){
-        return value;
-    }
+    public abstract float getValue();
 
-    public void changeValue(int amountToAdd){
-        value = value + amountToAdd;
-    }
+
+    public abstract void changeValue(float value);
+
+    public abstract void setValue(float value);
 }
