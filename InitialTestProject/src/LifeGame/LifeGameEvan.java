@@ -6,7 +6,7 @@ public class LifeGameEvan {
     private enum Command {
         empty, help, exit, getInfo, next, setSavings,
         getSavings, setInvestment, getInvestment,
-         setRate, transferStoI, transferItoS
+        setRate, getRate, transferStoI, transferItoS, setInvestmentRisk
     }
 
     private static Human mainCharacter;
@@ -21,36 +21,38 @@ public class LifeGameEvan {
         displayLine();
         getNames();
         initialAccountValue();
+        setInvestmentRisk();
     }
 
-    private static void runGame(){
+    private static void runGame() {
         boolean exit = false;
 
         //Loop through user input until the user exits
-        while(!exit){
-            exit = getUserInput();
+        while (!exit) {
+            exit = getCommand();
         }
     }
 
     private static void advanceYear() {
         mainCharacter.advanceAge();
         mainCharacter.investmentAccount.advanceYear();
+        mainCharacter.investmentAccount.resetRisk();
         displayLine();
-        if(mainCharacter.getAge() != 1){
+        if (mainCharacter.getAge() != 1) {
             System.out.println("You are now: " + mainCharacter.getAge() + " years old.");
-        }
-        else{
+        } else {
             //Change to "1 year old" vs "1 years old"
             System.out.println("You are now: " + mainCharacter.getAge() + " year old.");
         }
-        System.out.printf("Investment Account: $%.2f\n", mainCharacter.investmentAccount.getValue());
-        System.out.printf("Savings Account: $%.2f\n", mainCharacter.savingsAccount.getValue());
+        getInvestment();
+        getSavings();
+        getRate();
         displayLine();
 
     }
 
     //TODO Debugging tool
-    private static void setSavings(){
+    private static void setSavings() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please enter a value: ");
         String valueString = scan.nextLine();
@@ -59,7 +61,7 @@ public class LifeGameEvan {
     }
 
     //TODO Debugging tool
-    private static void setInvestment(){
+    private static void setInvestment() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please enter a value: ");
         String valueString = scan.nextLine();
@@ -68,7 +70,7 @@ public class LifeGameEvan {
     }
 
     //TODO Debugging tool
-    private static void setRate(){
+    private static void setRate() {
         System.out.println("Please enter a value: ");
         Scanner scan = new Scanner(System.in);
         String valueString = scan.nextLine();
@@ -77,42 +79,79 @@ public class LifeGameEvan {
     }
 
     //TODO
-    private static void displayAccountValue(){
-        displayLine();
-        System.out.println("The value of your savings is: " + mainCharacter.savingsAccount.getValue());
-        displayLine();
-    }
-
-    //TODO
-    private static void initialAccountValue(){
+    private static void initialAccountValue() {
         System.out.println("Please enter an initial account value: ");
         Scanner scan = new Scanner(System.in);
         int value = Integer.parseInt(scan.nextLine());
         mainCharacter.investmentAccount.changeValue(value);
     }
 
+    private static void getInvestment() {
+        System.out.printf("Investment: $%.2f\n", mainCharacter.investmentAccount.getValue());
+    }
+
+    private static void getSavings() {
+        System.out.printf("Savings: $%.2f\n", mainCharacter.savingsAccount.getValue());
+    }
+
+
+    private static void getRate() {
+        System.out.printf("Investment Rate: %.2f%%\n", mainCharacter.investmentAccount.getRate() * 100);
+    }
+
+    private static void setInvestmentRisk() {
+        Scanner scan = new Scanner(System.in);
+
+        boolean isValidInput = false;
+        while (!isValidInput) {
+            System.out.println("Which investment risk level would you like?");
+            System.out.println("Low | Medium | High");
+            String riskInput = scan.nextLine();
+            displayLine();
+            riskInput = riskInput.toLowerCase();
+            switch (riskInput) {
+                case ("low"):
+                    isValidInput = true;
+                    mainCharacter.investmentAccount.setRisk(0);
+                    break;
+                case ("medium"):
+                    isValidInput = true;
+                    mainCharacter.investmentAccount.setRisk(1);
+                    break;
+                case ("high"):
+                    isValidInput = true;
+                    mainCharacter.investmentAccount.setRisk(2);
+                    break;
+                default:
+                    System.out.println("Invalid Input");
+                    break;
+            }
+        }
+
+    }
+
     /**
      * Used to show user the commands available
      */
-    private static void displayCommands(){
+    private static void displayCommands() {
         for (Command command : Command.values()) {
-            if(command != Command.empty){
+            if (command != Command.empty) {
                 System.out.println(command);
             }
         }
     }
 
-    private static void transferStoI(){
+    //TODO change to only allow floats
+    private static void transferStoI() {
         System.out.println("Please enter a value to transfer from savings to investment: ");
         Scanner scan = new Scanner(System.in);
         String amountString = scan.nextLine();
         float amount = Integer.parseInt(amountString);
         //Cant transfer negative amounts
-        if(amount < 0){
+        if (amount < 0) {
             System.out.println("Transfer Failed: You can not transfer negative amounts (try transferItoS)");
             return;
-        }
-        else if(amount > mainCharacter.savingsAccount.getValue()){
+        } else if (amount > mainCharacter.savingsAccount.getValue()) {
             System.out.println("Transfer Failed: You can not transfer more than the value of your savings account.");
             return;
         }
@@ -120,16 +159,16 @@ public class LifeGameEvan {
         mainCharacter.savingsAccount.changeValue(amount * -1);
     }
 
-    private static void transferItoS(){
+    //TODO change to only allow floats
+    private static void transferItoS() {
         System.out.println("Please enter a value to transfer from investment to savings: ");
         Scanner scan = new Scanner(System.in);
         String amountString = scan.nextLine();
         float amount = Integer.parseInt(amountString);
-        if(amount < 0){
+        if (amount < 0) {
             System.out.println("Transfer Failed: You can not transfer negative amounts (try transferStoI)");
             return;
-        }
-        else if(amount > mainCharacter.investmentAccount.getValue()){
+        } else if (amount > mainCharacter.investmentAccount.getValue()) {
             System.out.println("Transfer Failed: You can not transfer more than the value of your investment account.");
             return;
         }
@@ -140,7 +179,7 @@ public class LifeGameEvan {
     /**
      * Prompts user and executes actions based on given commands
      */
-    private static boolean getUserInput() {
+    private static boolean getCommand() {
         boolean exit = false;
         Command command = Command.empty;
         String input;
@@ -153,57 +192,64 @@ public class LifeGameEvan {
         System.out.print(">>");
 
         //Loop until a valid command is given
-        while(command == Command.empty && !exit){
+        while (command == Command.empty && !exit) {
             input = scan.nextLine();
-            switch (input){
-                case("getInfo"):
+            switch (input) {
+                case ("getInfo"):
                     command = Command.getInfo;
                     displayInfo();
                     break;
-                case("next"):
+                case ("next"):
                     command = Command.next;
                     advanceYear();
                     break;
-                case("help"):
+                case ("help"):
                     //Same as showCommands for now
                     command = Command.help;
                     displayCommands();
                     break;
-                case("setSavings"):
+                case ("setSavings"):
                     command = Command.setSavings;
                     setSavings();
                     break;
-                case("setInvestment"):
+                case ("setInvestment"):
                     command = Command.setInvestment;
                     setInvestment();
                     break;
-                case("getSavings"):
+                case ("getSavings"):
                     command = Command.getSavings;
-                    displayAccountValue();
+                    getSavings();
                     break;
-                case("getInvestment"):
+                case ("getInvestment"):
                     command = Command.getInvestment;
-                    displayAccountValue();
+                    getInvestment();
                     break;
-                case("transferStoI"):
+                case ("transferStoI"):
                     command = Command.transferStoI;
                     transferStoI();
                     break;
-                case("transferItoS"):
+                case ("transferItoS"):
                     command = Command.transferItoS;
                     transferItoS();
                     break;
-                case("setRate"):
+                case ("setRate"):
                     command = Command.setRate;
                     setRate();
                     break;
-                case("exit"):
+                case ("getRate"):
+                    command = Command.getRate;
+                    getRate();
+                    break;
+                case ("setInvestmentRisk"):
+                    command = command.setInvestmentRisk;
+                    setInvestmentRisk();
+                case ("exit"):
                     command = command.exit;
                     break;
                 default:
                     command = Command.empty;
             }
-            if(command == command.empty){
+            if (command == command.empty) {
                 System.out.println("\"" + input + "\" is not a valid input.");
                 System.out.print(">>");
             }
