@@ -5,9 +5,6 @@ public class LifeGameEvan {
         empty, exit, getInfo, advanceYear, showCommands
     }
 
-    private static int playerAge = 0;
-    private static String playerFirstName = "";
-    private static String playerLastName = "";
     private static Human mainCharacter;
 
     public static void main(String args[]) {
@@ -28,6 +25,16 @@ public class LifeGameEvan {
 
     private static void advanceYear() {
         mainCharacter.advanceAge();
+        displayLine();
+        if(mainCharacter.getAge() != 1){
+            System.out.println("You are now: " + mainCharacter.getAge() + " years old.");
+        }
+        else{
+            //Change to "1 year old" vs "1 years old"
+            System.out.println("You are now: " + mainCharacter.getAge() + " year old.");
+        }
+        displayLine();
+
     }
 
     /**
@@ -64,7 +71,17 @@ public class LifeGameEvan {
                     command = Command.advanceYear;
                     advanceYear();
                     break;
+                case("next"):
+                    //Same as advanceYear for now
+                    command = Command.advanceYear;
+                    advanceYear();
+                    break;
                 case("showCommands"):
+                    command = Command.showCommands;
+                    displayCommands();
+                    break;
+                case("help"):
+                    //Same as showCommands for now
                     command = Command.showCommands;
                     displayCommands();
                     break;
@@ -105,35 +122,33 @@ public class LifeGameEvan {
             //Create human with random first and last name
             //This happens automatically when no inputs are passed into Human class
             mainCharacter = new Human();
-            playerFirstName = mainCharacter.getFirstName();
-            playerLastName = mainCharacter.getLastName();
         } else {
             //Scanner for user input
             Scanner scan = new Scanner(System.in);
 
             //Get first and last name for user
             System.out.println("Please enter your first name: ");
-            playerFirstName = scan.nextLine();
+            String playerFirstName = scan.nextLine();
             while (!playerFirstName.matches("[A-Za-z0-9]+")) {
                 System.out.println("Please only enter alphanumeric characters: ");
                 playerFirstName = scan.nextLine();
             }
 
             System.out.println("Please enter your last name: ");
-            playerLastName = scan.nextLine();
+            String playerLastName = scan.nextLine();
             while (!playerLastName.matches("[A-Za-z0-9]+")) {
                 System.out.println("Please only enter alphanumeric characters: ");
                 playerLastName = scan.nextLine();
             }
 
             //Create new human with the given parameters
-            mainCharacter = new Human(playerAge, playerFirstName, playerLastName);
+            mainCharacter = new Human(playerFirstName, playerLastName);
         }
 
         displayLine();
 
         //Ask user to confirm their name or restart
-        System.out.println("Your name is: " + playerFirstName + " " + playerLastName);
+        System.out.println("Your name is: " + mainCharacter.getFirstName() + " " + mainCharacter.getLastName());
         System.out.println("Would you like to change it?");
 
         //If user says yes, have the name process repeat

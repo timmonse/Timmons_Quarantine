@@ -8,18 +8,32 @@ public class Human {
     }
 
     private int age;
+    private float accountValue;
     private String firstName;
     private String lastName;
 
     public Human(){
         firstName = getRandomFirstName();
         lastName = getRandomLastName();
+
+        age = 0;
+        accountValue = 0;
     }
 
-    public Human(int age, String firstName, String lastName){
-        this.age = age;
+    public Human(String firstName, String lastName){
         this.firstName = firstName;
         this.lastName = lastName;
+
+        age = 0;
+        accountValue = 0;
+    }
+
+    /**
+     *
+     * @return Value of humans account
+     */
+    public float getAccountValue(){
+        return accountValue;
     }
 
     /**
