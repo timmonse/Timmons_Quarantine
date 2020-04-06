@@ -7,7 +7,7 @@ public class Text2Life_Main {
     private static boolean Alive = true;
     private static int deathnumber = 0;
     private static int deathMath = 0;
-    private static int loopz = 0;
+    private static double loopz = 0.0;
     private static boolean x = true;
     private static int sickstuntz = 0;
     private static int cancer = 0;
@@ -16,17 +16,23 @@ public class Text2Life_Main {
     private static int cliff = 0;
 
     public static void main(String args[]) {
-        while (loopz <= 70000000) {
+        while (loopz < 1000000000) {
             age = 0;
             Alive = true;
             //startGame();
             mainGame();
         }
         System.out.println("Cancer " + cancer);
+        System.out.println("Cancer percentage: " + (cancer/loopz * 100));
         System.out.println("Overdose " + overdose);
+        System.out.println("Overdose percentage: " + (overdose/loopz * 100));
         System.out.println("Sick stuntz " + sickstuntz);
+        System.out.println("Sick stuntz percentage: " + (sickstuntz/loopz * 100));
         System.out.println("Falling off cliff " + cliff);
+        System.out.println("Falling off cliff percentage: " + (cliff/loopz * 100));
         System.out.println("Old age " + old);
+        System.out.println("Old percentage: " + (old/loopz * 100));
+
     }
 
     private static void startGame() {
