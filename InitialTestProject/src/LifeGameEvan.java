@@ -1,89 +1,193 @@
 import java.util.Scanner;
 
 public class LifeGameEvan {
-    private static int playerAge = 0;
-    private static String playerFirstName = "";
-    private static String playerLastName = "";
+    private enum Command {
+        empty, exit, getInfo, advanceYear, showCommands
+    }
+
+    private static Human mainCharacter;
 
     public static void main(String args[]) {
-        displayStartArt();
-        displayLine();
         startGame();
     }
 
     private static void startGame() {
+        boolean exit = false;
 
-
-
+        displayStartArt();
+        displayLine();
         getNames();
+        //Loop through user input until the user exits
+        while(!exit){
+            exit = getUserInput();
+        }
+    }
 
-
+    private static void advanceYear() {
+        mainCharacter.advanceAge();
+        displayLine();
+        if(mainCharacter.getAge() != 1){
+            System.out.println("You are now: " + mainCharacter.getAge() + " years old.");
+        }
+        else{
+            //Change to "1 year old" vs "1 years old"
+            System.out.println("You are now: " + mainCharacter.getAge() + " year old.");
+        }
+        displayLine();
 
     }
 
-    private static void getNames(){
-        System.out.println("Do you want a random name?");
-        if(askYes()){
-            //Create human with random first and last name
-            Human mainCharacter = new Human();
-            playerFirstName = mainCharacter.getFirstName();
-            playerLastName = mainCharacter.getLastName();
-            System.out.println("Your first name is: " + playerFirstName);
-            System.out.println("Your last name is: " + playerLastName);
+    /**
+     * Used to show user the commands available
+     */
+    private static void displayCommands(){
+        for (Command command : Command.values()) {
+            if(command != Command.empty){
+                System.out.println(command);
+            }
         }
-        else{
+    }
+
+    /**
+     * Prompts user and executes actions based on given commands
+     */
+    private static boolean getUserInput() {
+        boolean exit = false;
+        Command command = Command.empty;
+        String input;
+
+        Scanner scan = new Scanner(System.in);
+        System.out.print(">>");
+
+        //Loop until a valid command is given
+        while(command == Command.empty && !exit){
+            input = scan.nextLine();
+            switch (input){
+                case("getInfo"):
+                    command = Command.getInfo;
+                    displayInfo();
+                    break;
+                case("advanceYear"):
+                    command = Command.advanceYear;
+                    advanceYear();
+                    break;
+                case("next"):
+                    //Same as advanceYear for now
+                    command = Command.advanceYear;
+                    advanceYear();
+                    break;
+                case("showCommands"):
+                    command = Command.showCommands;
+                    displayCommands();
+                    break;
+                case("help"):
+                    //Same as showCommands for now
+                    command = Command.showCommands;
+                    displayCommands();
+                    break;
+                case("exit"):
+                    command = command.exit;
+                    break;
+                default:
+                    command = Command.empty;
+            }
+            if(command == command.empty){
+                System.out.println("\"" + input + "\" is not a valid input.");
+                System.out.print(">>");
+            }
+
+        }
+        //Return true if command is "exit"
+        return (command == command.exit);
+    }
+
+    /**
+     * Display current human info to console
+     */
+    private static void displayInfo() {
+        displayLine();
+        System.out.println("Name: " + mainCharacter.getFirstName() + " " + mainCharacter.getLastName());
+        System.out.println("Age: " + mainCharacter.getAge());
+        System.out.println("Life Stage: " + mainCharacter.getLifeStage());
+        displayLine();
+    }
+
+    /**
+     * Prompts user to create a name either randomly or custom
+     * Creates a new human and assigns the name value
+     */
+    private static void getNames() {
+        System.out.println("Do you want a random name?");
+        if (askYes()) {
+            //Create human with random first and last name
+            //This happens automatically when no inputs are passed into Human class
+            mainCharacter = new Human();
+        } else {
             //Scanner for user input
             Scanner scan = new Scanner(System.in);
 
             //Get first and last name for user
             System.out.println("Please enter your first name: ");
-            playerFirstName = scan.nextLine();
-            while(!playerFirstName.matches("[A-Za-z0-9]+")){
+            String playerFirstName = scan.nextLine();
+            while (!playerFirstName.matches("[A-Za-z0-9]+")) {
                 System.out.println("Please only enter alphanumeric characters: ");
                 playerFirstName = scan.nextLine();
             }
 
             System.out.println("Please enter your last name: ");
-            playerLastName = scan.nextLine();
-            while(!playerLastName.matches("[A-Za-z0-9]+")){
+            String playerLastName = scan.nextLine();
+            while (!playerLastName.matches("[A-Za-z0-9]+")) {
                 System.out.println("Please only enter alphanumeric characters: ");
                 playerLastName = scan.nextLine();
             }
 
             //Create new human with the given parameters
-            Human mainCharacter = new Human(playerAge, playerFirstName, playerLastName);
+            mainCharacter = new Human(playerFirstName, playerLastName);
+        }
 
-            //Ask user to confirm their name or restart
-            System.out.println("Your name is: " + playerFirstName +  " " + playerLastName + ". Really?.....");
+        displayLine();
 
-            //If user does not say yes, have the name process repeat
-            if(!askYes()){
-                startGame();
-            }
+        //Ask user to confirm their name or restart
+        System.out.println("Your name is: " + mainCharacter.getFirstName() + " " + mainCharacter.getLastName());
+        System.out.println("Would you like to change it?");
+
+        //If user says yes, have the name process repeat
+        if (askYes()) {
+            getNames();
         }
     }
 
-    private static boolean askYes(){
+    /**
+     * Requests yes or no from user
+     *
+     * @return True for yes and false for no
+     */
+    private static boolean askYes() {
         Scanner scan = new Scanner(System.in);
 
         System.out.println("Y/N");
         String yesOrNo = scan.nextLine();
         yesOrNo = yesOrNo.toLowerCase();
-        while(!yesOrNo.equals("y") && !yesOrNo.equals("n")){
+        while (!yesOrNo.equals("y") && !yesOrNo.equals("n")) {
             System.out.println("Please enter \"Y\" or \"N\"");
             yesOrNo = scan.nextLine();
-            yesOrNo= yesOrNo.toLowerCase();
+            yesOrNo = yesOrNo.toLowerCase();
         }
-        if(yesOrNo.equals("y")){
+        if (yesOrNo.equals("y")) {
             return true;
-        }
-        else return false;
+        } else return false;
     }
 
-    private static void displayLine(){
+    /**
+     * Displays a simple line to split up output
+     */
+    private static void displayLine() {
         System.out.println("----------------------------------------------------------------------------------------------------");
     }
 
+    /**
+     * Displays a starting graphic to user
+     */
     private static void displayStartArt() {
         StringBuilder sb = new StringBuilder();
 
