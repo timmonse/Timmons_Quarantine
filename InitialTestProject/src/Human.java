@@ -60,6 +60,13 @@ public class Human {
     }
 
     /**
+     * @return Advance age of human by one year
+     */
+    public void advanceAge(){
+        age++;
+    }
+
+    /**
      * @return Age of human
      */
     public int getAge(){

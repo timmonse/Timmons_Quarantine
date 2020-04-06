@@ -1,6 +1,10 @@
 import java.util.Scanner;
 
 public class LifeGameEvan {
+    private enum Command {
+        empty, Get_Info, Advance_Year
+    }
+
     private static int playerAge = 0;
     private static String playerFirstName = "";
     private static String playerLastName = "";
@@ -11,20 +15,63 @@ public class LifeGameEvan {
     }
 
     private static void startGame() {
+        boolean exit = false;
+
         displayStartArt();
         displayLine();
         getNames();
-        displayStatistics();
+        //Loop through user input until the user exits
+        while(!exit){
+            exit = getUserInput();
+        }
     }
 
-    private static void takeTurn(){
-
+    private static void advanceYear() {
+        mainCharacter.advanceAge();
     }
 
     /**
-     * Display current human statistics to console
+     * Prompts user and executes actions based on given commands
      */
-    private static void displayStatistics(){
+    private static boolean getUserInput() {
+        boolean exit = false;
+        Command command = Command.empty;
+        String input;
+
+        Scanner scan = new Scanner(System.in);
+        System.out.print(">>");
+
+        //Loop until a valid command is given
+        while(command == Command.empty && !exit){
+            input = scan.nextLine();
+            switch (input){
+                case("getInfo"):
+                    command = Command.Get_Info;
+                    displayInfo();
+                    break;
+                case("advanceYear"):
+                    command = Command.Advance_Year;
+                    advanceYear();
+                    break;
+                case("exit"):
+                    exit = true;
+                    break;
+                default:
+                    command = Command.empty;
+            }
+            if(exit){
+                System.out.println("|| Text 2 Life || \"" + input + "\" is not a valid input.");
+                System.out.print(">>");
+            }
+
+        }
+        return exit;
+    }
+
+    /**
+     * Display current human info to console
+     */
+    private static void displayInfo() {
         displayLine();
         System.out.println("Name: " + mainCharacter.getFirstName() + " " + mainCharacter.getLastName());
         System.out.println("Age: " + mainCharacter.getAge());
@@ -35,9 +82,9 @@ public class LifeGameEvan {
      * Prompts user to create a name either randomly or custom
      * Creates a new human and assigns the name value
      */
-    private static void getNames(){
+    private static void getNames() {
         System.out.println("Do you want a random name?");
-        if(askYes()){
+        if (askYes()) {
             //Create human with random first and last name
             //This happens automatically when no inputs are passed into Human class
             mainCharacter = new Human();
@@ -45,22 +92,21 @@ public class LifeGameEvan {
             playerLastName = mainCharacter.getLastName();
             System.out.println("Your first name is: " + playerFirstName);
             System.out.println("Your last name is: " + playerLastName);
-        }
-        else{
+        } else {
             //Scanner for user input
             Scanner scan = new Scanner(System.in);
 
             //Get first and last name for user
             System.out.println("Please enter your first name: ");
             playerFirstName = scan.nextLine();
-            while(!playerFirstName.matches("[A-Za-z0-9]+")){
+            while (!playerFirstName.matches("[A-Za-z0-9]+")) {
                 System.out.println("Please only enter alphanumeric characters: ");
                 playerFirstName = scan.nextLine();
             }
 
             System.out.println("Please enter your last name: ");
             playerLastName = scan.nextLine();
-            while(!playerLastName.matches("[A-Za-z0-9]+")){
+            while (!playerLastName.matches("[A-Za-z0-9]+")) {
                 System.out.println("Please only enter alphanumeric characters: ");
                 playerLastName = scan.nextLine();
             }
@@ -69,10 +115,10 @@ public class LifeGameEvan {
             mainCharacter = new Human(playerAge, playerFirstName, playerLastName);
 
             //Ask user to confirm their name or restart
-            System.out.println("Your name is: " + playerFirstName +  " " + playerLastName + ". Really?.....");
+            System.out.println("Your name is: " + playerFirstName + " " + playerLastName + ". Really?.....");
 
             //If user does not say yes, have the name process repeat
-            if(!askYes()){
+            if (!askYes()) {
                 startGame();
             }
         }
@@ -80,29 +126,29 @@ public class LifeGameEvan {
 
     /**
      * Requests yes or no from user
+     *
      * @return True for yes and false for no
      */
-    private static boolean askYes(){
+    private static boolean askYes() {
         Scanner scan = new Scanner(System.in);
 
         System.out.println("Y/N");
         String yesOrNo = scan.nextLine();
         yesOrNo = yesOrNo.toLowerCase();
-        while(!yesOrNo.equals("y") && !yesOrNo.equals("n")){
+        while (!yesOrNo.equals("y") && !yesOrNo.equals("n")) {
             System.out.println("Please enter \"Y\" or \"N\"");
             yesOrNo = scan.nextLine();
-            yesOrNo= yesOrNo.toLowerCase();
+            yesOrNo = yesOrNo.toLowerCase();
         }
-        if(yesOrNo.equals("y")){
+        if (yesOrNo.equals("y")) {
             return true;
-        }
-        else return false;
+        } else return false;
     }
 
     /**
      * Displays a simple line to split up output
      */
-    private static void displayLine(){
+    private static void displayLine() {
         System.out.println("----------------------------------------------------------------------------------------------------");
     }
 
