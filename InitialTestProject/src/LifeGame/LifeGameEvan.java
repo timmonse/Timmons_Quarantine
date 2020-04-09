@@ -1,5 +1,7 @@
 package LifeGame;
 
+import org.jfree.ui.RefineryUtilities;
+
 import java.util.Scanner;
 
 public class LifeGameEvan {
@@ -10,6 +12,10 @@ public class LifeGameEvan {
     }
 
     private static Human mainCharacter;
+
+    private static GraphAccounts accountValueChart = new GraphAccounts(
+            "Account Value vs Year" ,
+            "Account Value vs Year");
 
     public static void main(String args[]) {
         startGame();
@@ -34,9 +40,12 @@ public class LifeGameEvan {
     }
 
     private static void advanceYear() {
+        accountValueChart.addInvestmentValue(mainCharacter.getAge(), mainCharacter.investmentAccount.getValue());
+        accountValueChart.addSavingsValue(mainCharacter.getAge(), mainCharacter.savingsAccount.getValue());
         mainCharacter.advanceAge();
         mainCharacter.investmentAccount.advanceYear();
         mainCharacter.investmentAccount.resetRisk();
+
         displayLine();
         if (mainCharacter.getAge() != 1) {
             System.out.println("You are now: " + mainCharacter.getAge() + " years old.");
@@ -94,7 +103,6 @@ public class LifeGameEvan {
         System.out.printf("Savings: $%.2f\n", mainCharacter.savingsAccount.getValue());
     }
 
-
     private static void getRate() {
         System.out.printf("Investment Rate: %.2f%%\n", mainCharacter.investmentAccount.getRate() * 100);
     }
@@ -128,6 +136,13 @@ public class LifeGameEvan {
             }
         }
 
+    }
+
+    private static void exit(){
+        //Show graph with the investment and savings value over time
+        accountValueChart.pack( );
+        RefineryUtilities.centerFrameOnScreen( accountValueChart );
+        accountValueChart.setVisible( true );
     }
 
     /**
@@ -201,7 +216,10 @@ public class LifeGameEvan {
                     break;
                 case ("next"):
                     command = Command.next;
-                    advanceYear();
+                    for(int i = 0; i < 100; i++){
+                        advanceYear();
+                    }
+                    //advanceYear();
                     break;
                 case ("help"):
                     //Same as showCommands for now
@@ -245,6 +263,7 @@ public class LifeGameEvan {
                     setInvestmentRisk();
                 case ("exit"):
                     command = command.exit;
+                    exit();
                     break;
                 default:
                     command = Command.empty;
