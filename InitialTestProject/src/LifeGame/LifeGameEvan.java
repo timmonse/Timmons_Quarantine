@@ -17,6 +17,8 @@ public class LifeGameEvan {
             "Account Value vs Year" ,
             "Account Value vs Year");
 
+    private static int jobLevel = 0;
+
     public static void main(String args[]) {
         startGame();
         runGame();
@@ -42,9 +44,35 @@ public class LifeGameEvan {
     private static void advanceYear() {
         accountValueChart.addInvestmentValue(mainCharacter.getAge(), mainCharacter.investmentAccount.getValue());
         accountValueChart.addSavingsValue(mainCharacter.getAge(), mainCharacter.savingsAccount.getValue());
-        mainCharacter.advanceAge();
-        mainCharacter.investmentAccount.advanceYear();
-        mainCharacter.investmentAccount.resetRisk();
+
+
+        //TODO Make joblevel dynamic
+        if(mainCharacter.getAge() >= 15 && mainCharacter.getAge() <= 18 && jobLevel == 0){
+            System.out.println("Would you like to stay in high school?");
+            //If they say no, assign the job level
+            if(!askYes()){
+                jobLevel = 1; //High school dropout job
+                mainCharacter.getJob(jobLevel);
+            }
+        }
+        else if(mainCharacter.getAge() >= 19 && mainCharacter.getAge() <= 22 && jobLevel == 0){
+            System.out.println("Would you like to stay in college?");
+            //If they say no, assign the job level
+            if(!askYes()){
+                jobLevel = 2; //College dropout job
+                mainCharacter.getJob(jobLevel);
+            }
+        }
+        else if(mainCharacter.getAge() == 23 && jobLevel == 0){
+            System.out.println("Congrats! You are getting a college graduate job");
+            jobLevel = 3; //College dropout job
+            mainCharacter.getJob(jobLevel);
+        }
+
+        if(jobLevel > 0){
+            mainCharacter.savingsAccount.changeValue(mainCharacter.getSalary());
+        }
+
 
         displayLine();
         if (mainCharacter.getAge() != 1) {
@@ -53,6 +81,11 @@ public class LifeGameEvan {
             //Change to "1 year old" vs "1 years old"
             System.out.println("You are now: " + mainCharacter.getAge() + " year old.");
         }
+
+        mainCharacter.advanceAge();
+        mainCharacter.investmentAccount.advanceYear();
+        mainCharacter.investmentAccount.resetRisk();
+
         getInvestment();
         getSavings();
         getRate();
@@ -216,10 +249,11 @@ public class LifeGameEvan {
                     break;
                 case ("next"):
                     command = Command.next;
-                    for(int i = 0; i < 100; i++){
-                        advanceYear();
-                    }
-                    //advanceYear();
+                    advanceYear();
+                    break;
+                case (""):
+                    command = Command.next;
+                    advanceYear();
                     break;
                 case ("help"):
                     //Same as showCommands for now

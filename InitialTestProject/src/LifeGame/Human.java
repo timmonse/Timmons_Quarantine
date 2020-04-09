@@ -12,6 +12,7 @@ public class Human {
     private int age;
     private String firstName;
     private String lastName;
+    private Job job;
 
     public SavingsAccount savingsAccount;
     public InvestmentAccount investmentAccount;
@@ -45,14 +46,6 @@ public class Human {
 
     /**
      *
-     * @return Value of humans account
-     */
-    public float getSavingsAccountValue(){
-        return this.savingsAccount.getValue();
-    }
-
-    /**
-     *
      * @return a life stage based on age
      */
     public LifeStage getLifeStage(){
@@ -63,7 +56,7 @@ public class Human {
         else if(age > 3 && age <= 6){
             currentLifeStage = LifeStage.Early_Childhood;
         }
-        else if(age > 6 && age <= 8){
+        else if(age > 6 && age <= 9){
             currentLifeStage = LifeStage.Middle_Childhood;
         }
         else if(age > 9 && age <= 11){
@@ -117,6 +110,21 @@ public class Human {
     }
 
     /**
+     * Set a job based on the job level
+     * @param jobLevel
+     */
+    public void getJob(int jobLevel){
+        job = new Job(jobLevel);
+    }
+
+    /**
+     * @return Salary of job
+     */
+    public int getSalary(){
+        return job.getSalary();
+    }
+
+    /**
      * @return Randomly selected first name from LifeGame.data.java
      */
     private String getRandomFirstName(){
@@ -147,5 +155,6 @@ public class Human {
 
         return lastName;
     }
+
 
 }
